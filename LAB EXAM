@@ -1,0 +1,342 @@
+Enter password: *****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 16
+Server version: 8.0.31 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database cms;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use cms;
+Database changed
+mysql> CREATE TABLE Supplier (s_id INT PRIMARY KEY, s_name VARCHAR(255) NOT NULL, s_contact VARCHAR(200));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Company (c_id INT PRIMARY KEY, c_name VARCHAR(255) NOT NULL);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Contract (contract_id INT PRIMARY KEY, sup_id INT, com_id INT, c_date DATE NOT NULL, price DECIMAL(15, 2),FOREIGN KEY (sup_id) REFERENCES Supplier(s_id),FOREIGN KEY (com_id) REFERENCES Company(c_id));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE Project (p_id INT PRIMARY KEY, p_name VARCHAR(255) NOT NULL,p_description VARCHAR(255) NOT NULL);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Orders ( o_id INT PRIMARY KEY, cont_id INT, project_id INT,  o_qty INT,   o_date DATE NOT NULL, o_inquiry VARCHAR(300),  FOREIGN KEY (cont_id) REFERENCES Contract(contract_id),  FOREIGN KEY (project_id) REFERENCES Project(p_id));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Item ( i_id INT PRIMARY KEY,  con_id INT, order_id INT,i_name VARCHAR(255) NOT NULL,  i_qty INT NOT NULL,  i_description VARCHAR(255) NOT NULL,  FOREIGN KEY (con_id) REFERENCES Contract(contract_id),  FOREIGN KEY (order_id) REFERENCES Orders(o_id));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc Supplier;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| s_id      | int          | NO   | PRI | NULL    |       |
+| s_name    | varchar(255) | NO   |     | NULL    |       |
+| s_contact | varchar(200) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Company;
++--------+--------------+------+-----+---------+-------+
+| Field  | Type         | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| c_id   | int          | NO   | PRI | NULL    |       |
+| c_name | varchar(255) | NO   |     | NULL    |       |
++--------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc Contract;
++-------------+---------------+------+-----+---------+-------+
+| Field       | Type          | Null | Key | Default | Extra |
++-------------+---------------+------+-----+---------+-------+
+| contract_id | int           | NO   | PRI | NULL    |       |
+| sup_id      | int           | YES  | MUL | NULL    |       |
+| com_id      | int           | YES  | MUL | NULL    |       |
+| c_date      | date          | NO   |     | NULL    |       |
+| price       | decimal(15,2) | YES  |     | NULL    |       |
++-------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc Project;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| p_id          | int          | NO   | PRI | NULL    |       |
+| p_name        | varchar(255) | NO   |     | NULL    |       |
+| p_description | varchar(255) | NO   |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Orders;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| o_id       | int          | NO   | PRI | NULL    |       |
+| cont_id    | int          | YES  | MUL | NULL    |       |
+| project_id | int          | YES  | MUL | NULL    |       |
+| o_qty      | int          | YES  |     | NULL    |       |
+| o_date     | date         | NO   |     | NULL    |       |
+| o_inquiry  | varchar(300) | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> desc Items;
+ERROR 1146 (42S02): Table 'cms.items' doesn't exist
+mysql> desc Item;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| i_id          | int          | NO   | PRI | NULL    |       |
+| con_id        | int          | YES  | MUL | NULL    |       |
+| order_id      | int          | YES  | MUL | NULL    |       |
+| i_name        | varchar(255) | NO   |     | NULL    |       |
+| i_qty         | int          | NO   |     | NULL    |       |
+| i_description | varchar(255) | NO   |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> INSERT INTO Supplier VALUES
+    -> (1, 'ABC Supplies Ltd.', '123-456-7890'),
+    -> (2, 'XYZ Components Co.', '987-654-3210'),
+    -> (3, 'TechParts Inc.', '555-123-4567'),
+    -> (4, 'FutureTech Ltd.', '800-555-1234'),
+    -> (5, 'PartsDirect Co.', '600-555-6789');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Supplier;
++------+--------------------+--------------+
+| s_id | s_name             | s_contact    |
++------+--------------------+--------------+
+|    1 | ABC Supplies Ltd.  | 123-456-7890 |
+|    2 | XYZ Components Co. | 987-654-3210 |
+|    3 | TechParts Inc.     | 555-123-4567 |
+|    4 | FutureTech Ltd.    | 800-555-1234 |
+|    5 | PartsDirect Co.    | 600-555-6789 |
++------+--------------------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Company VALUES
+    -> (1, 'MVS Computing System'),
+    -> (2, 'Global Tech Solutions'),
+    -> (3, 'Innovative Devices Ltd.'),
+    -> (4, 'NextGen Technologies'),
+    -> (5, 'UltraCompute Inc.');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Company;
++------+-------------------------+
+| c_id | c_name                  |
++------+-------------------------+
+|    1 | MVS Computing System    |
+|    2 | Global Tech Solutions   |
+|    3 | Innovative Devices Ltd. |
+|    4 | NextGen Technologies    |
+|    5 | UltraCompute Inc.       |
++------+-------------------------+
+5 rows in set (0.00 sec)
+
+mysql> ^C
+mysql> INSERT INTO Contract VALUES
+    -> (1, 1, 1, '2024-01-15', 50000.00),
+    -> (2, 2, 1, '2024-02-20', 70000.00),
+    -> (3, 3, 2, '2024-03-05', 60000.00),
+    -> (4, 4, 3, '2024-04-10', 75000.00),
+    -> (5, 5, 4, '2024-05-25', 80000.00);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Contract;
++-------------+--------+--------+------------+----------+
+| contract_id | sup_id | com_id | c_date     | price    |
++-------------+--------+--------+------------+----------+
+|           1 |      1 |      1 | 2024-01-15 | 50000.00 |
+|           2 |      2 |      1 | 2024-02-20 | 70000.00 |
+|           3 |      3 |      2 | 2024-03-05 | 60000.00 |
+|           4 |      4 |      3 | 2024-04-10 | 75000.00 |
+|           5 |      5 |      4 | 2024-05-25 | 80000.00 |
++-------------+--------+--------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> (1, 'Project Alpha', 'Developing next-gen computing devices'),
+    -> (2, 'Project Beta', 'Building AI-powered laptops'),
+    -> (3, 'Project Gamma', 'Creating high-performance servers'),
+    -> (4, 'Project Delta', 'Developing smart home devices'),
+    ->
+    -> ^C
+mysql> INSERT INTO Project VALUES
+    -> (1, 'Project Alpha', 'Developing next-gen computing devices'),
+    -> (2, 'Project Beta', 'Building AI-powered laptops'),
+    -> (3, 'Project Gamma', 'Creating high-performance servers'),
+    -> (4, 'Project Delta', 'Developing smart home devices'),
+    -> (5, 'Project Epsilon', 'Creating a new cloud storage system');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Project;
++------+-----------------+---------------------------------------+
+| p_id | p_name          | p_description                         |
++------+-----------------+---------------------------------------+
+|    1 | Project Alpha   | Developing next-gen computing devices |
+|    2 | Project Beta    | Building AI-powered laptops           |
+|    3 | Project Gamma   | Creating high-performance servers     |
+|    4 | Project Delta   | Developing smart home devices         |
+|    5 | Project Epsilon | Creating a new cloud storage system   |
++------+-----------------+---------------------------------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Orders VALUES
+    -> (1, 1, 1, 100, '2024-02-01', 'Order for 100 items for Project Alpha'),
+    -> (2, 2, 2, 50, '2024-03-15', 'Order for 50 items for Project Beta'),
+    -> (3, 3, 4, 75, '2024-04-10', 'Order for 75 items for Project Gamma'),
+    -> (4, 4, 4, 120, '2024-05-05', 'Order for 120 items for Project Delta'),
+    -> ^C
+mysql> NSERT INTO Orders (o_id, cont_id, project_id, o_qty, o_date, o_inquiry) VALUES
+    -> (1, 1, 1, 100, '2024-02-01', 'Order for 100 items for Project Alpha'),
+    -> (2, 2, 2, 50, '2024-03-15', 'Order for 50 items for Project Beta'),
+    -> (3, 3, 3, 75, '2024-04-10', 'Order for 75 items for Project Gamma'),
+    -> (4, 4, 4, 120, '2024-05-05', 'Order for 120 items for Project Delta'),
+    -> (5, 5, 5, 200, '2024-06-01', 'Order for 200 items for Project Epsilon');^C
+mysql> NSERT INTO Orders VALUES
+    -> (1, 1, 1, 100, '2024-02-01', 'Order for 100 items for Project Alpha'),
+    -> (2, 2, 2, 50, '2024-03-15', 'Order for 50 items for Project Beta'),
+    -> (3, 3, 3, 75, '2024-04-10', 'Order for 75 items for Project Gamma'),
+    -> (4, 4, 4, 120, '2024-05-05', 'Order for 120 items for Project Delta'),
+    -> (5, 5, 5, 200, '2024-06-01', 'Order for 200 items for Project Epsilon');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NSERT INTO Orders VALUES
+(1, 1, 1, 100, '2024-02-01', 'Order for 100 items for P' at line 1
+mysql> INSERT INTO Orders VALUES
+    -> (1, 1, 1, 100, '2024-02-01', 'Order for 100 items for Project Alpha'),
+    -> (2, 2, 2, 50, '2024-03-15', 'Order for 50 items for Project Beta'),
+    -> (3, 3, 3, 75, '2024-04-10', 'Order for 75 items for Project Gamma'),
+    -> (4, 4, 4, 120, '2024-05-05', 'Order for 120 items for Project Delta'),
+    -> (5, 5, 5, 200, '2024-06-01', 'Order for 200 items for Project Epsilon');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Orders;
++------+---------+------------+-------+------------+-----------------------------------------+
+| o_id | cont_id | project_id | o_qty | o_date     | o_inquiry                               |
++------+---------+------------+-------+------------+-----------------------------------------+
+|    1 |       1 |          1 |   100 | 2024-02-01 | Order for 100 items for Project Alpha   |
+|    2 |       2 |          2 |    50 | 2024-03-15 | Order for 50 items for Project Beta     |
+|    3 |       3 |          3 |    75 | 2024-04-10 | Order for 75 items for Project Gamma    |
+|    4 |       4 |          4 |   120 | 2024-05-05 | Order for 120 items for Project Delta   |
+|    5 |       5 |          5 |   200 | 2024-06-01 | Order for 200 items for Project Epsilon |
++------+---------+------------+-------+------------+-----------------------------------------+
+5 rows in set (0.00 sec)
+
+mysql> NSERT INTO Item (i_id, con_id, order_id, i_name, i_qty, i_description) VALUES
+    -> (1, 1, 1, 'Motherboard', 100, 'pharmacy'),
+    -> (2, 1, 1, 'CPU', 100, 'High-performance processor for devices'),
+    -> (3, 2, 2, 'Laptop Screen', 50, 'pharmacy'),
+    -> (4, 2, 2, 'Battery', 50, 'Lithium-ion battery for laptops'),
+    -> (5, 3, 4, 'Server Rack', 75, 'Rack for server installations'),
+    -> (6, 3, 4, 'RAM Modules', 75, '16GB RAM for high-performance servers'),
+    -> (7, 4, 4, 'Smart Sensor', 120, 'Sensor for smart home devices'),
+    -> (8, 4, 4, 'Controller', 120, 'Central controller for smart devices'),
+    -> (9, 5, 5, 'Storage Drive', 200, 'pharmacy'),
+    -> (10, 5, 5, 'Power Supply', 200, 'Power supply for cloud storage system');^C
+mysql> NSERT INTO Item VALUES
+    -> (1, 1, 1, 'Motherboard', 100, 'pharmacy'),
+    -> (2, 1, 1, 'CPU', 100, 'High-performance processor for devices'),
+    -> (3, 2, 2, 'Laptop Screen', 50, 'pharmacy'),
+    -> (4, 2, 2, 'Battery', 50, 'Lithium-ion battery for laptops'),
+    -> (5, 3, 4, 'Server Rack', 75, 'Rack for server installations'),
+    -> (6, 3, 4, 'RAM Modules', 75, '16GB RAM for high-performance servers'),
+    -> (7, 4, 4, 'Smart Sensor', 120, 'Sensor for smart home devices'),
+    -> (8, 4, 4, 'Controller', 120, 'Central controller for smart devices'),
+    -> (9, 5, 5, 'Storage Drive', 200, 'pharmacy'),
+    -> (10, 5, 5, 'Power Supply', 200, 'Power supply for cloud storage system');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NSERT INTO Item VALUES
+(1, 1, 1, 'Motherboard', 100, 'pharmacy'),
+(2, 1, 1, 'CPU' at line 1
+mysql> INSERT INTO Item VALUES
+    -> (1, 1, 1, 'Motherboard', 100, 'pharmacy'),
+    -> (2, 1, 1, 'CPU', 100, 'High-performance processor for devices'),
+    -> (3, 2, 2, 'Laptop Screen', 50, 'pharmacy'),
+    -> (4, 2, 2, 'Battery', 50, 'Lithium-ion battery for laptops'),
+    -> (5, 3, 4, 'Server Rack', 75, 'Rack for server installations'),
+    -> (6, 3, 4, 'RAM Modules', 75, '16GB RAM for high-performance servers'),
+    -> (7, 4, 4, 'Smart Sensor', 120, 'Sensor for smart home devices'),
+    -> (8, 4, 4, 'Controller', 120, 'Central controller for smart devices'),
+    -> (9, 5, 5, 'Storage Drive', 200, 'pharmacy'),
+    -> (10, 5, 5, 'Power Supply', 200, 'Power supply for cloud storage system');
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from Item;
++------+--------+----------+---------------+-------+----------------------------------------+
+| i_id | con_id | order_id | i_name        | i_qty | i_description                          |
++------+--------+----------+---------------+-------+----------------------------------------+
+|    1 |      1 |        1 | Motherboard   |   100 | pharmacy                               |
+|    2 |      1 |        1 | CPU           |   100 | High-performance processor for devices |
+|    3 |      2 |        2 | Laptop Screen |    50 | pharmacy                               |
+|    4 |      2 |        2 | Battery       |    50 | Lithium-ion battery for laptops        |
+|    5 |      3 |        4 | Server Rack   |    75 | Rack for server installations          |
+|    6 |      3 |        4 | RAM Modules   |    75 | 16GB RAM for high-performance servers  |
+|    7 |      4 |        4 | Smart Sensor  |   120 | Sensor for smart home devices          |
+|    8 |      4 |        4 | Controller    |   120 | Central controller for smart devices   |
+|    9 |      5 |        5 | Storage Drive |   200 | pharmacy                               |
+|   10 |      5 |        5 | Power Supply  |   200 | Power supply for cloud storage system  |
++------+--------+----------+---------------+-------+----------------------------------------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT Supplier.s_id AS Supplier_ID, Supplier.s_name AS Supplier_Name, COUNT(DISTINCT Contract.contract_id) AS C_count, AVG(Contract.price) AS Avg_camt, SUM(Item.i_qty) AS i_ordered FROM Supplier JOIN Contract ON Supplier.s_id = Contract.sup_id JOIN Item ON Contract.contract_id = Item.con_id GROUP BY Supplier.s_id, Supplier.s_name;
++-------------+--------------------+---------+--------------+-----------+
+| Supplier_ID | Supplier_Name      | C_count | Avg_camt     | i_ordered |
++-------------+--------------------+---------+--------------+-----------+
+|           1 | ABC Supplies Ltd.  |       1 | 50000.000000 |       200 |
+|           2 | XYZ Components Co. |       1 | 70000.000000 |       100 |
+|           3 | TechParts Inc.     |       1 | 60000.000000 |       150 |
+|           4 | FutureTech Ltd.    |       1 | 75000.000000 |       240 |
+|           5 | PartsDirect Co.    |       1 | 80000.000000 |       400 |
++-------------+--------------------+---------+--------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> delete from the Item where i_description = 'pharmacy';
+ERROR 1146 (42S02): Table 'cms.the' doesn't exist
+mysql> delete from Item where i_description = 'pharmacy';
+Query OK, 3 rows affected (0.00 sec)
+
+mysql> select * from Item;
++------+--------+----------+--------------+-------+----------------------------------------+
+| i_id | con_id | order_id | i_name       | i_qty | i_description                          |
++------+--------+----------+--------------+-------+----------------------------------------+
+|    2 |      1 |        1 | CPU          |   100 | High-performance processor for devices |
+|    4 |      2 |        2 | Battery      |    50 | Lithium-ion battery for laptops        |
+|    5 |      3 |        4 | Server Rack  |    75 | Rack for server installations          |
+|    6 |      3 |        4 | RAM Modules  |    75 | 16GB RAM for high-performance servers  |
+|    7 |      4 |        4 | Smart Sensor |   120 | Sensor for smart home devices          |
+|    8 |      4 |        4 | Controller   |   120 | Central controller for smart devices   |
+|   10 |      5 |        5 | Power Supply |   200 | Power supply for cloud storage system  |
++------+--------+----------+--------------+-------+----------------------------------------+
+7 rows in set (0.00 sec)
+
+mysql> UPDATE Item SET i_qty = i_qty + 10 WHERE order_id IN ( SELECT o_id FROM Orders WHERE project_id = 4 );
+Query OK, 4 rows affected (0.00 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+mysql> select * from Item;
++------+--------+----------+--------------+-------+----------------------------------------+
+| i_id | con_id | order_id | i_name       | i_qty | i_description                          |
++------+--------+----------+--------------+-------+----------------------------------------+
+|    2 |      1 |        1 | CPU          |   100 | High-performance processor for devices |
+|    4 |      2 |        2 | Battery      |    50 | Lithium-ion battery for laptops        |
+|    5 |      3 |        4 | Server Rack  |    85 | Rack for server installations          |
+|    6 |      3 |        4 | RAM Modules  |    85 | 16GB RAM for high-performance servers  |
+|    7 |      4 |        4 | Smart Sensor |   130 | Sensor for smart home devices          |
+|    8 |      4 |        4 | Controller   |   130 | Central controller for smart devices   |
+|   10 |      5 |        5 | Power Supply |   200 | Power supply for cloud storage system  |
++------+--------+----------+--------------+-------+----------------------------------------+
+7 rows in set (0.00 sec)
+
